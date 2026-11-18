@@ -230,7 +230,8 @@ export function createCliService(dependencies: CliServiceDependencies): CliAppli
 
       switch (parsedArguments.command) {
         case 'start':
-          void checkForUpdates(true);
+          // Update checks are disabled in this fork: starting the server must
+          // not contact the npm registry or print an update notification.
           await dependencies.startServer();
           return 0;
         case 'sandbox':

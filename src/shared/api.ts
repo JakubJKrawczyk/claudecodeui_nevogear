@@ -5,6 +5,12 @@ import {
 } from '@/shared/authToken';
 import { IS_PLATFORM } from '@/shared/utils';
 import { readVoiceConfig, voiceConfigHeaders } from '@/shared/voiceConfig';
+import type {
+  LiveViewDirectory,
+  LiveViewFile,
+  LiveViewFileStat,
+  LiveViewRoots,
+} from '@/shared/types';
 
 // Headers are a plain record rather than the full `HeadersInit` union so the
 // defaults below can be merged with a caller's headers by spreading.
@@ -712,3 +718,22 @@ export function synthesizeVoice(text: string, signal: AbortSignal): Promise<Resp
 
   return api.voice.tts(text, { headers: voiceConfigHeaders(), signal });
 }
+
+//----------------- LIVE VIEW ------------
+
+/**
+ * Read-only endpoints backing the docked Live View panel. The server confines
+ * every path to its configured roots; these helpers only serialize the query
+ * and reuse the shared authenticated request pipeline.
+ */
+export const liveViewApi = {
+  roots: () => get('/api/live-view/roots').then(readApiJson<LiveViewRoots>),
+  tree: (path: string) =>
+    get(`/api/live-view/tree${query({ path })}`).then(readApiJson<LiveViewDirectory>),
+  stat: (path: string) =>
+    get(`/api/live-view/stat${query({ path })}`).then(readApiJson<LiveViewFileStat>),
+  file: (path: string) =>
+    get(`/api/live-view/file${query({ path })}`).then(readApiJson<LiveViewFile>),
+};
+
+// ---------------------------

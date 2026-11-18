@@ -2007,3 +2007,41 @@ type TaskStatus =
 
 /** A TaskMaster task's priority; high, medium and low are the known values and the string fallback tolerates anything else TaskMaster emits. */
 type TaskPriority = 'high' | 'medium' | 'low' | string;
+
+//----------------- LIVE VIEW ------------
+
+/** One entry returned by the read-only live-view directory endpoint. */
+export type LiveViewEntry = {
+  name: string;
+  path: string;
+  type: 'directory' | 'file';
+  size: number;
+  mtime: number;
+};
+
+/** Directory listing returned to the live-view file picker. */
+export type LiveViewDirectory = {
+  path: string;
+  parent: string | null;
+  entries: LiveViewEntry[];
+};
+
+/** File metadata used by the panel's cheap change polling. */
+export type LiveViewFileStat = {
+  path: string;
+  mtime: number;
+  size: number;
+};
+
+/** Text file payload rendered by the docked live-view panel. */
+export type LiveViewFile = LiveViewFileStat & {
+  name: string;
+  content: string;
+};
+
+/** Roots the live-view panel may browse, resolved by the server. */
+export type LiveViewRoots = {
+  roots: string[];
+};
+
+// ---------------------------
